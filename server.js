@@ -8,12 +8,14 @@ require("dotenv").config();
 const pool = require("./src/config/db");
 
 const app = express();
+const authRoutes = require("./src/routes/authRoutes");
 
 // Middleware (Security & Logging)
 app.use(express.json()); // Allow JSON body parsing
 app.use(cors()); // Allow frontend requests
 app.use(helmet()); // Security headers
 app.use(morgan("dev")); // Request logging
+app.use("/api/auth", authRoutes);
 
 // Basic Route to Test Server
 app.get("/", (req, res) => {
