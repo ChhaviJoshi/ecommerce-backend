@@ -9,6 +9,8 @@ const pool = require("./src/config/db");
 
 const app = express();
 const authRoutes = require("./src/routes/authRoutes");
+const productRoutes = require("./src/routes/productRoutes");
+const cartRoutes = require("./src/routes/cartRoutes");
 
 // Middleware (Security & Logging)
 app.use(express.json()); // Allow JSON body parsing
@@ -16,6 +18,8 @@ app.use(cors()); // Allow frontend requests
 app.use(helmet()); // Security headers
 app.use(morgan("dev")); // Request logging
 app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/cart", cartRoutes);
 
 // Basic Route to Test Server
 app.get("/", (req, res) => {
