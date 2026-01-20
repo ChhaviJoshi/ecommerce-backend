@@ -6,6 +6,10 @@ const addToCart = async (req, res) => {
   const userId = req.user.id;
   const { productId, quantity } = req.body;
 
+  console.log("🛒 Add to Cart Request Received!");
+  console.log("User ID from Token:", userId);
+  console.log("Product ID:", productId);
+  
   try {
     const item = await cartModel.addToCart(userId, productId, quantity || 1);
     res.status(201).json({ message: "Item added to cart", item });
