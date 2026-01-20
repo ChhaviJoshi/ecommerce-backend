@@ -11,6 +11,8 @@ const app = express();
 const authRoutes = require("./src/routes/authRoutes");
 const productRoutes = require("./src/routes/productRoutes");
 const cartRoutes = require("./src/routes/cartRoutes");
+const orderRoutes = require("./src/routes/orderRoutes");
+const rateLimit = require("./src/middleware/rateLimiter");
 
 // Middleware (Security & Logging)
 app.use(express.json()); // Allow JSON body parsing
@@ -20,7 +22,8 @@ app.use(morgan("dev")); // Request logging
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
-
+app.use("/api/orders", orderRoutes);
+app.use(rateLimit);
 // Basic Route to Test Server
 app.get("/", (req, res) => {
   res.send("🚀 E-Commerce API is running...");

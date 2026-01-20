@@ -19,11 +19,39 @@ const createProduct = async (
   return result.rows[0];
 };
 
-// 2. Get All Products (Public) - with basic Pagination support
-const getAllProducts = async (limit = 20, offset = 0) => {
-  const query =
-    "SELECT * FROM products ORDER BY created_at DESC LIMIT $1 OFFSET $2";
-  const result = await pool.query(query, [limit, offset]);
+// 2. Get All Products (With Search & Filter)
+const getAllProducts = async (limit = 10, offset = 0, search, category, minPrice, maxPrice) => {
+  let query = 'SELECT * FROM products WHERE 1=1';
+  const values = [];
+  let paramIndex = 1;
+
+  // Dynamic SQL Construction
+  if (search) {
+    query += ` AND name ILIKE $${paramIndex}`;
+    values.push(`%${search}%`); // % allows partial matching
+    paramIndex++;
+  }
+  if (category) {
+    query += ` AND category = $${paramIndex}`;
+    values.push(category);
+    paramIndex++;
+  }
+  if (minPrice) {
+    query += ` AND price >= $${paramIndex}`;
+    values.push(minPrice);
+    paramIndex++;
+  }
+  if (maxPrice) {
+    query += ` AND price <= $${paramIndex}`;
+    values.push(maxPrice);
+    paramIndex++;
+  }
+
+  // Add Pagination
+  query += ` ORDER BY created_at DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+  values.push(limit, offset);
+
+  const result = await pool.query(query, values);
   return result.rows;
 };
 

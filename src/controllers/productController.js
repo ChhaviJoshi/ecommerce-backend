@@ -7,7 +7,8 @@ const getProducts = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
-
+    const { search, category, minPrice, maxPrice } = req.query;
+    
     const products = await productModel.getAllProducts(limit, offset);
     res.json({ page, limit, products });
   } catch (err) {
