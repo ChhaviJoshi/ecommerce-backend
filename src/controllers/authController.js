@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const userModel = require("../models/userModel");
 
-// 1. REGISTER (You already have this)
+// REGISTER
 const register = async (req, res) => {
   const { name, email, password } = req.body;
   try {
@@ -29,7 +29,7 @@ const register = async (req, res) => {
   }
 };
 
-// 2. LOGIN (👈 NEW FUNCTION)
+// LOGIN 
 const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -46,8 +46,7 @@ const login = async (req, res) => {
       return res.status(400).json({ error: "Invalid credentials" });
     }
 
-    // C. Generate Token (The "Key Card")
-    // Payload: What information is hidden inside the token?
+    // Generate Token 
     const payload = {
       user: {
         id: user.id,
@@ -55,14 +54,13 @@ const login = async (req, res) => {
       },
     };
 
-    // Sign the token with your secret key
     const token = jwt.sign(
       payload,
       process.env.JWT_SECRET,
       { expiresIn: "1h" } // Token expires in 1 hour
     );
 
-    // D. Send Token
+    // Send Token
     res.json({
       message: "Login successful",
       token,

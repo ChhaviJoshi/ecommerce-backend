@@ -1,15 +1,14 @@
 const cartModel = require("../models/cartModel");
 
-// POST /api/cart (Add to Cart)
+// POST /api/cart 
 const addToCart = async (req, res) => {
-  // We get the User ID from the Token (req.user)
   const userId = req.user.id;
   const { productId, quantity } = req.body;
 
   console.log("🛒 Add to Cart Request Received!");
   console.log("User ID from Token:", userId);
   console.log("Product ID:", productId);
-  
+
   try {
     const item = await cartModel.addToCart(userId, productId, quantity || 1);
     res.status(201).json({ message: "Item added to cart", item });
@@ -19,13 +18,13 @@ const addToCart = async (req, res) => {
   }
 };
 
-// GET /api/cart (View Cart)
+// GET /api/cart 
 const getCart = async (req, res) => {
   const userId = req.user.id;
   try {
     const items = await cartModel.getCartByUserId(userId);
 
-    // Calculate Total Price Logic
+    //Total Price Logic
     let totalPrice = 0;
     items.forEach((item) => {
       totalPrice += parseFloat(item.price) * item.quantity;
@@ -41,7 +40,7 @@ const getCart = async (req, res) => {
   }
 };
 
-// DELETE /api/cart/:productId (Remove Item)
+// DELETE /api/cart/:productId 
 const removeFromCart = async (req, res) => {
   const userId = req.user.id;
   const { productId } = req.params;

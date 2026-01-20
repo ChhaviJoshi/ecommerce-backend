@@ -1,6 +1,6 @@
 const pool = require("../config/db");
 
-// Function to create a new user
+//create a new user
 const createUser = async (name, email, password) => {
   const query = `
     INSERT INTO users (name, email, password)
@@ -12,7 +12,7 @@ const createUser = async (name, email, password) => {
   return result.rows[0];
 };
 
-// Function to find a user by email (used for login & duplicate checks)
+//find a user by email 
 const findUserByEmail = async (email) => {
   const query = "SELECT * FROM users WHERE email = $1";
   const result = await pool.query(query, [email]);

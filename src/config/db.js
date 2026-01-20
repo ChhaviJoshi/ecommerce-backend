@@ -8,7 +8,6 @@ const pool = new Pool({
   },
 });
 
-// 👇 THIS IS THE PART THAT PRINTS THE MESSAGE
 pool.query("SELECT NOW()", (err, res) => {
   if (err) {
     console.error("❌ Database Connection Failed:", err.message);

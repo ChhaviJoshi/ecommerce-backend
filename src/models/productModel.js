@@ -1,6 +1,6 @@
 const pool = require("../config/db");
 
-// 1. Create Product (Admin Only)
+// Create Product (Admin Only)
 const createProduct = async (
   name,
   description,
@@ -19,16 +19,15 @@ const createProduct = async (
   return result.rows[0];
 };
 
-// 2. Get All Products (With Search & Filter)
+// Get All Products (With Search & Filter)
 const getAllProducts = async (limit = 10, offset = 0, search, category, minPrice, maxPrice) => {
   let query = 'SELECT * FROM products WHERE 1=1';
   const values = [];
   let paramIndex = 1;
 
-  // Dynamic SQL Construction
   if (search) {
     query += ` AND name ILIKE $${paramIndex}`;
-    values.push(`%${search}%`); // % allows partial matching
+    values.push(`%${search}%`); 
     paramIndex++;
   }
   if (category) {
@@ -55,14 +54,14 @@ const getAllProducts = async (limit = 10, offset = 0, search, category, minPrice
   return result.rows;
 };
 
-// 3. Get Single Product (Public)
+// Get Single Product (Public)
 const getProductById = async (id) => {
   const query = "SELECT * FROM products WHERE id = $1";
   const result = await pool.query(query, [id]);
   return result.rows[0];
 };
 
-// 4. Update Product (Admin Only)
+// Update Product (Admin Only)
 const updateProduct = async (id, name, price, stock) => {
   const query = `
     UPDATE products 
@@ -74,7 +73,7 @@ const updateProduct = async (id, name, price, stock) => {
   return result.rows[0];
 };
 
-// 5. Delete Product (Admin Only)
+// Delete Product (Admin Only)
 const deleteProduct = async (id) => {
   const query = "DELETE FROM products WHERE id = $1 RETURNING *";
   const result = await pool.query(query, [id]);

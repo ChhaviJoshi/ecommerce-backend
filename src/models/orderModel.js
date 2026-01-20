@@ -1,12 +1,12 @@
 const pool = require("../config/db");
 
 const createOrder = async (userId) => {
-  const client = await pool.connect(); // Get a dedicated client for transaction
+  const client = await pool.connect(); 
 
   try {
-    await client.query("BEGIN"); // 🛑 Start Transaction
+    await client.query("BEGIN"); 
 
-    // 1. Get Cart Items
+    // Get Cart Items
     const cartQuery = `
       SELECT c.product_id, c.quantity, p.price 
       FROM cart_items c
@@ -20,13 +20,13 @@ const createOrder = async (userId) => {
       throw new Error("Cart is empty");
     }
 
-    // 2. Calculate Total Price
+    // Total Price
     let totalPrice = 0;
     cartItems.forEach((item) => {
       totalPrice += parseFloat(item.price) * item.quantity;
     });
 
-    // 3. Create Order Record
+    // Create Order Record
     const orderQuery = `
       INSERT INTO orders (user_id, total_price, status)
       VALUES ($1, $2, 'pending')
@@ -35,7 +35,7 @@ const createOrder = async (userId) => {
     const orderRes = await client.query(orderQuery, [userId, totalPrice]);
     const orderId = orderRes.rows[0].id;
 
-    // 4. Move Items to Order Items Table
+    // Move Items to Order Items Table
     for (const item of cartItems) {
       const itemQuery = `
         INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase)
@@ -49,20 +49,19 @@ const createOrder = async (userId) => {
       ]);
     }
 
-    // 5. Clear User's Cart
+    // Clear User's Cart
     await client.query("DELETE FROM cart_items WHERE user_id = $1", [userId]);
 
-    await client.query("COMMIT"); // ✅ Save Changes
+    await client.query("COMMIT"); 
     return { orderId, totalPrice, status: "pending" };
   } catch (error) {
-    await client.query("ROLLBACK"); // ↩️ Undo everything if error
+    await client.query("ROLLBACK"); 
     throw error;
   } finally {
-    client.release(); // Release client back to pool
+    client.release(); 
   }
 };
 
-// Get Order History
 const getOrdersByUserId = async (userId) => {
   const query =
     "SELECT * FROM orders WHERE user_id = $1 ORDER BY created_at DESC";
